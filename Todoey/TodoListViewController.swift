@@ -10,10 +10,17 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
     
-    var itemArray = ["Find Nemo", "Buy Eggs", "Destroy Earth"]
+    var itemArray = ["Find Nemo", "Get married", "Destroy Earth"]
+    
+     let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let items = defaults.array(forKey: "TodoListArray") as? [String] {
+            itemArray = items
+                    }
+        //ito ang naglo-load ng saved data mula sa user defaults, useful lalo na kapag na-terminate yung app
         
         
         // Do any additional setup after loading the view, typically from a nib.
@@ -60,9 +67,12 @@ class TodoListViewController: UITableViewController {
         
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
             //what will happen when the user clicks the Add Item button on the UIAlert
-            print(textField.text)
+            print(textField.text!)
             
             self.itemArray.append(textField.text!)
+            //para ma-add yung item sa row
+            self.defaults.set(self.itemArray, forKey: "TodoListArray")
+            //para i-save yung current array, ginawa ito para kapag naterminate yung app at ni-reload ay hindi mawala yung mga data
             self.tableView.reloadData()
             
         }
@@ -70,7 +80,7 @@ class TodoListViewController: UITableViewController {
         alert.addTextField { (alertTextField) in
             alertTextField.placeholder = "Create new item"
             textField = alertTextField
-            print(alertTextField.text)
+            print(alertTextField.text!)
         }
         
         alert.addAction(action)
